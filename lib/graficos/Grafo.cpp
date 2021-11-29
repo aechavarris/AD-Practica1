@@ -17,19 +17,19 @@ void Grafo::addArista(Arista arista){
             cout<<"Esta arista ya existe: "<<arista.toString()<<endl;
             exit(1);
         }
-        if(arista.v1.id == this->aristas.at(i).v1.id && !encontrado1){
+        if(arista.v1.id == this->aristas.at(i).v1.id ){
             this->aristas.at(i).v1.grado++;
             arista.v1.grado = this->aristas.at(i).v1.grado;
             encontrado1 = true;
-        }else if (arista.v1.id == this->aristas.at(i).v2.id && !encontrado1){
+        }else if (arista.v1.id == this->aristas.at(i).v2.id ){
             this->aristas.at(i).v2.grado++;
-            arista.v2.grado = this->aristas.at(i).v2.grado;
+            arista.v1.grado = this->aristas.at(i).v2.grado;
             encontrado1 = true;
-        }else if(arista.v2.id == this->aristas.at(i).v1.id && !encontrado2){
+        }else if(arista.v2.id == this->aristas.at(i).v1.id ){
             this->aristas.at(i).v1.grado++;
-            arista.v1.grado = this->aristas.at(i).v1.grado;
+            arista.v2.grado = this->aristas.at(i).v1.grado;
             encontrado2 = true;
-        }else if (arista.v2.id == this->aristas.at(i).v2.id && !encontrado2){
+        }else if (arista.v2.id == this->aristas.at(i).v2.id ){
             this->aristas.at(i).v2.grado++;
             arista.v2.grado = this->aristas.at(i).v2.grado;
             encontrado2 = true;
@@ -59,8 +59,6 @@ int Grafo::minGrado(){
 int Grafo::maxGrado(){
     int maxGrado = 0;
     for (int i = 0; i < this->aristas.size();i++){
-        cout <<"Arista: "<< this->aristas.at(i).toString()<<
-               " Grado: "<<this->aristas.at(i).v1.grado<<" "<<this->aristas.at(i).v2.grado<<endl;
         if(this->aristas.at(i).v1.grado > maxGrado){
             maxGrado = this->aristas.at(i).v1.grado;
         }
