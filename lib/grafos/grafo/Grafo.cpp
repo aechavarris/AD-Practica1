@@ -121,11 +121,11 @@ void Grafo::deleteVertice(Vertice v){
     while(i < this->aristas.end()){
         cout << "Miro arista " << i->toString()<<endl;
         if(verticesContacto[i->v1.id]){
-            cout << "Disminuyo grado en 1" << endl;
-            i->v1.grado = ;
+            cout << "Disminuyo grado en " << verticesContacto[i->v1.id] << endl;
+            i->v1.grado = i->v1.grado - verticesContacto[i->v1.id];
         }else if(verticesContacto[i->v2.id]){
-            cout << "Disminuyo grado en 1" << endl;
-            i->v2.grado--;
+            cout << "Disminuyo grado en " << verticesContacto[i->v2.id] << endl;
+            i->v2.grado = i->v2.grado - verticesContacto[i->v2.id];
         }
         i++;
     }
