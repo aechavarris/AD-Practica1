@@ -10,7 +10,7 @@
 #include "Grafo.h"
 #include "../vertice/Vertice.h"
 
-Grafo::Grafo(int n) {
+Grafo::Grafo(const int n) {
     this->nVertices = n;
     int** m;
     m = new int*[n];

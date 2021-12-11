@@ -25,11 +25,11 @@ int main(int argv, char* argc[]) {
         cout << "Not enought arguments!" << endl;
         exit(1);
     }else if(argv == 2){
-        minDim = atoi(argc[1]);
+        minDim = atoi(argc[1]); 
         maxDim = minDim;
-        sum =1;
+        sum =1; 
     }else if(argv == 3){
-        minDim = atoi(argc[1]);
+        minDim = atoi(argc[1]); 
         maxDim = atoi(argc[2]);
         sum = 1;
     }else if(argv == 4){
@@ -38,7 +38,7 @@ int main(int argv, char* argc[]) {
         sum = atoi(argc[3]);
     }
     
-    while(minDim <maxDim){
+    while(minDim <= maxDim){
         cout << "Creando grafo dimension "<< minDim <<endl;
         string para = to_string(minDim);
         string buffer = para + "\n";

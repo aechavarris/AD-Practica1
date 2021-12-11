@@ -26,7 +26,7 @@ class Grafo {
         /*
          * Constructor de la clase Grafo
          */
-        Grafo(int n);
+        Grafo(const int n);
 
 
         // ---------------------------------------
