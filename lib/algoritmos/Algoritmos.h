@@ -68,6 +68,12 @@ class Algoritmos {
          * Post:
          */
         bool esHoja(Grafo grafo,int** arbol,int origen);
+        
+        /*
+         * Pre:
+         * Post:
+         */
+        vector<Vertice> greedyAlgorithm(Grafo &grafo);
 };
 
 #include  "Algoritmos.cpp"

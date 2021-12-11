@@ -54,6 +54,12 @@ class Grafo {
         Vertice maxGrado();
 
         /*
+         * Pre: 
+         * Post: 
+         */
+        void deleteVertice(Vertice v);
+
+        /*
          * Pre: --- 
          * Post: Devuelve, en formato string, las aristas
          *       que conforman el grafo

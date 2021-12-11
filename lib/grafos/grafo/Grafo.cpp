@@ -16,6 +16,9 @@ Grafo::Grafo(const int n) {
     m = new int*[n];
     for (int i = 0; i < n; i++) {
         m[i] = new int[n];
+        for(int j = 0; j < n; j++){
+            m[i][j] = 0;
+        }
     }
     this->matrix = m;
 };
@@ -92,6 +95,48 @@ Vertice Grafo::maxGrado() {
     }
     return maximo;
 };
+
+void Grafo::deleteVertice(Vertice v){
+    cout << "Borro vertice " << v.id<<endl;
+    auto i = this->aristas.begin();
+    int verticesContacto[this->nVertices];
+    for(int i = 0; i < this->nVertices; i++){
+        verticesContacto[i] = 0;
+    }
+    while(i < this->aristas.end()){
+        cout << "Miro arista " << i->toString()<<endl;
+        if(i->v1.id == v.id ){
+            verticesContacto[i->v2.id]++;
+            cout << "Erase" << endl;
+            this->aristas.erase(i);
+        }else if(i->v2.id == v.id){
+            verticesContacto[i->v1.id]++;
+            cout << "Erase" << endl;
+            this->aristas.erase(i);
+        }else{
+            i++;
+        }
+    }
+    i = this->aristas.begin();
+    while(i < this->aristas.end()){
+        cout << "Miro arista " << i->toString()<<endl;
+        if(verticesContacto[i->v1.id]){
+            cout << "Disminuyo grado en 1" << endl;
+            i->v1.grado = ;
+        }else if(verticesContacto[i->v2.id]){
+            cout << "Disminuyo grado en 1" << endl;
+            i->v2.grado--;
+        }
+        i++;
+    }
+    for (int i = 0; i < this->nVertices; i++) {
+        for(int j = 0; j < this->nVertices; j++){
+            if(i == v.id || j == v.id){
+                this->matrix[i][j] = 0;
+            }
+        }
+    }
+}
 
 string Grafo::toString() {
     string ret = "[ ";

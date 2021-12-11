@@ -61,7 +61,7 @@ void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
         }
     }
     my_file.close();
-    cout << endl;
+    cout <<"..."<< endl;
 }
 
 int main(int argv, char* argc[]) {
@@ -88,15 +88,8 @@ int main(int argv, char* argc[]) {
     {
         threads.at(i).join();
     }
-
-    // prueba.addArista(Arista(Vertice(0),Vertice(1))); 
-    // prueba.addArista(Arista(Vertice(1),Vertice(3)));
-    // prueba.addArista(Arista(Vertice(3),Vertice(2)));
-    // prueba.addArista(Arista(Vertice(3),Vertice(0)));
-    // prueba.addArista(Arista(Vertice(0),Vertice(2)));
-    // prueba.addArista(Arista(Vertice(3),Vertice(4)));
-    // prueba.addArista(Arista(Vertice(4),Vertice(2)));
     Algoritmos al = Algoritmos();
+
     //Aproximacion spanning tree recorrido en profundidad
     cout << "Aplicando Spanning-tree profundida: " <<endl;
     auto vertices = al.spanningTreeProfundidad(*prueba);
@@ -105,6 +98,7 @@ int main(int argv, char* argc[]) {
         cout << vertices.at(n).id <<" ";
     }
     cout << endl;
+
     //Aproximacion spanning tree recorrido en anchura
     cout << "\nAplicando Spanning-tree anchura: " <<endl;
     vertices = al.spanningTreeAnchura(*prueba);
@@ -113,10 +107,17 @@ int main(int argv, char* argc[]) {
         cout << vertices.at(n).id <<" ";
     }
     cout << endl;  
+
+    //Aproximacion spanning tree recorrido en anchura
+    cout << "\nAplicando Greddy-algorithm: " <<endl;
+    vertices = al.greedyAlgorithm(*prueba);
+    cout << "Vertices seleccionados" << endl;
+    for(int n = 0; n < vertices.size(); n++){
+        cout << vertices.at(n).id <<" ";
+    }
+    cout << endl;  
+
     cout << "Entrada: " << argc[1] << endl;
-    cout << "Grafo de " << dim << " vertices:" << endl;
-    cout << "Grafo: " << prueba->toString() << endl;
-    cout << "Minimo grado: Vertice " << prueba->minGrado().id << " Grado " << prueba->minGrado().grado << endl;
-    cout << "Maximo grado: Vertice " << prueba->maxGrado().id << " Grado " << prueba->maxGrado().grado << endl;
+    cout << "Grafo de " << dim << " vertices" << endl;
     return 0;
 }
