@@ -36,11 +36,15 @@ vector<Vertice> Algoritmos::spanningTreeProfundidad(Grafo grafo){
     int* minVertices = new int;
     *minVertices = grafo.nVertices+1;
     for(int n = 0; n < grafo.nVertices; n++){
-        cout << "Nodo raiz: " << n << endl;
+        cout << "Nodo raiz " << n <<" : ";
         recorridoProfundidad(grafo,n,verticesCogidos,vertices);   
         for(int i = 0; i < grafo.nVertices; i++){
             verticesCogidos[i] = false;
         }
+        for(int i = 0; i < vertices->size();i++){
+            cout << vertices->at(i).id << " ";
+        }
+        cout << endl;
         checkVertices(grafo,minVertices,verticesCogidos,vertices,verticesFinal);
     }
     return *verticesFinal;
@@ -92,11 +96,15 @@ vector<Vertice> Algoritmos::spanningTreeAnchura(Grafo grafo){
     int* minVertices = new int;
     *minVertices = grafo.nVertices+1;
     for (int n = 0; n < grafo.nVertices; n++) {
-        cout << "Nodo raiz: " << n << endl;
+        cout << "Nodo raiz " << n <<" : ";
         recorridoAnchura(grafo, n, verticesCogidos, verticesRecorridos, vertices, m); 
         quitarHojas(grafo, n, vertices, m);
         for (int i = 0; i < grafo.nVertices; i++) verticesCogidos[i] = false;
         for (int i = 0; i < grafo.nVertices; i++) verticesRecorridos[i] = false;
+        for(int i = 0; i < vertices->size();i++){
+            cout << vertices->at(i).id << " ";
+        }
+        cout << endl;
         checkVertices(grafo, minVertices, verticesCogidos, vertices, verticesFinal);
     }
     return *verticesFinal;
@@ -170,18 +178,19 @@ vector<Vertice> Algoritmos::greedyAlgorithm(Grafo &grafo){
     int total = 0;
     bool verticesCogidos[tmp->nVertices];
     for(int i = 0; i < tmp->nVertices; i++){
-        verticesCogidos[false];
+        verticesCogidos[i] = false;
     }
 
     while(total < tmp->nVertices){
         Vertice maxVertice = tmp->maxGrado();
         cout << tmp->toString() << endl;
-        cout << "Maximo grado " << maxVertice.grado <<" vertice " << maxVertice.id <<endl;
+        //cout << "Maximo grado " << maxVertice.grado <<" vertice " << maxVertice.id <<endl;
         for(int i = 0; i < tmp->nVertices;i++){
-            if(tmp->matrix[maxVertice.id][i] == 1 && !verticesCogidos[i]){
-                cout << "Nuevo vertice: " << total<<endl;
+            //cout << tmp->matrix[maxVertice.id][i] << " " << tmp->matrix[i][maxVertice.id] << endl;
+            if((tmp->matrix[maxVertice.id][i] == 1 || tmp->matrix[i][maxVertice.id] == 1) && !verticesCogidos[i]){
                 verticesCogidos[i] = true;
                 total++;
+                //cout << "Nuevo vertice: " <<i<< " total de vertices " << total<<endl;
             }
         }
         if(!verticesCogidos[maxVertice.id]){

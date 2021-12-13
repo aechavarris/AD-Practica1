@@ -28,10 +28,10 @@ int info_fichero(string fichero) {
 void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
     fstream my_file;
     my_file.open(fichero, ios::in);
-    
+    const int dim2 = dim * dim;
     // Declaración de variables utilizadas
-    char *linea = (char*)malloc(sizeof(char[1000]));
-    char *tmp = (char*)malloc(sizeof(char[1000]));
+    char *linea = (char*)malloc(sizeof(char[dim2]));
+    char *tmp = (char*)malloc(sizeof(char[dim2]));
     int i = start, j = 0;
     float tmp_f;
     int count = start;
@@ -40,7 +40,7 @@ void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
         while(!my_file.eof() && count < end) { 
             //cout << endl;
 
-            my_file.getline(linea, 1000, '\n');
+            my_file.getline(linea, dim2, '\n');
             count++;
             tmp = strtok(linea," ");
 
@@ -73,8 +73,8 @@ int main(int argv, char* argc[]) {
     int nThreadsSupported = (int)std::thread::hardware_concurrency();
     vector<thread> threads = vector<thread>();
 
-    int start = 0;
-    int end = dim * dim;
+    long int start = 0;
+    long int end = dim * dim;
     
     cout << "Reading input matrix..." << endl;
     for (int i = 0; i < nThreadsSupported; i++)
@@ -87,6 +87,12 @@ int main(int argv, char* argc[]) {
     for (int i = 0; i < nThreadsSupported; i++)
     {
         threads.at(i).join();
+    }
+    for(int i = 0; i < dim; i++ ){
+        for(int j = 0; j < dim; j++ ){
+            cout << prueba->matrix[i][j] <<" ";
+        }
+        cout << endl;
     }
     Algoritmos al = Algoritmos();
 
