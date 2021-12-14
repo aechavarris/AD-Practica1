@@ -36,7 +36,7 @@ int info_fichero(string fichero) {
     exit(1);
 }
 
-void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
+void get_weight(string fichero, int dim, Grafo* grafo) {
     fstream my_file;
     my_file.open(fichero, ios::in);
     const int dim2 = dim * 2 + 1;
@@ -44,24 +44,25 @@ void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
     char *linea = (char*)malloc(sizeof(char[dim2]));
     char *tmp = (char*)malloc(sizeof(char[dim2]));
     set<Vertice,OrderNodo> grados;
-    int i = start, j = 0;
+    int i = 0, j = 0;
     float tmp_f;
-    int count = start;
+    int count = dim;
     if(my_file.is_open()) { 
-        my_file.seekg(start * dim, std::ios::cur);
+        //my_file.seekg(start * dim, std::ios::cur);
         
-        while(!my_file.eof() && count <= end) { 
+        while(!my_file.eof() ) { 
             //cout << endl; 
             int grado = 0;
             my_file.getline(linea, dim2, '\n');
             //cout << linea <<endl;
             count++;
             //cout << count/end << " %" << endl;
-            printf ("%f", (float)count/(float)end);
+            printf ("%f", (float)count/(float)dim);
             cout <<" %" << endl;
             tmp = strtok(linea," ");
 
             while (tmp != NULL) {
+                
                 tmp_f = atoi(tmp);
                 //cout << tmp_f << " ";
                 
@@ -70,8 +71,6 @@ void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
                     //grafo->addArista(arista);
                     grado ++;
                     grafo->matrix[i-1][j] = true;
-                }else{
-                    grafo->matrix[i-1][j] = false;
                 }
                 j++;
                 tmp = strtok (NULL, " ");
@@ -98,43 +97,8 @@ int main(int argv, char* argc[]) {
     int nThreadsSupported = (int)std::thread::hardware_concurrency();
     vector<thread> threads = vector<thread>();
 
-    long int start = 0;
-    if(dim <= nThreadsSupported){
+    get_weight(argc[1], dim, prueba);
 
-        cout << "Reading input matrix..." << endl;
-        long int end = start +1 ;
-        for (int i = 0; i < nThreadsSupported && start != end; i++)
-        {   
-            cout << "Start " << start << " end " << end <<endl;
-            threads.push_back(thread(get_weight, start, end, argc[1], dim, ref(prueba)));
-            start = end;
-            end = start +1 ;
-        }
-        cout << "Start " << start << " end " << end <<endl;
-        for (int i = 0; i < threads.size(); i++)
-        {
-            threads.at(i).join();
-        }
-    }else{
-        get_weight(0, dim, argc[1], dim, prueba);
-        // long int end = dim / nThreadsSupported;
-        
-        // cout << "Reading input matrix..." << endl;
-        // cout << nThreadsSupported <<" cores" << endl;
-        
-        // for (int i = 0; i < nThreadsSupported; i++)
-        // {   
-        //     cout << "Start " << start << " end " << end <<endl;
-        //     threads.push_back(thread(get_weight, start, end, argc[1], dim, ref(prueba)));
-        //     start = end;
-        //     end = (i == nThreadsSupported - 2) ? dim : end + dim / nThreadsSupported;
-        // }
-        // cout << "Start " << start << " end " << end <<endl;
-        // for (int i = 0; i < threads.size(); i++)
-        // {
-        //     threads.at(i).join();
-        // }
-    }
     Algoritmos al = Algoritmos();
     for(int i = 0; i < prueba->nVertices; i++){
         for(int j = 0; j < prueba->nVertices; j++){

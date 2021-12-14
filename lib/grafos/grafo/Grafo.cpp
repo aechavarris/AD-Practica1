@@ -17,7 +17,7 @@ Grafo::Grafo(const int n) {
     for (int i = 0; i < n; i++) {
         m[i] = new bool[n];
         for(int j = 0; j < n; j++){
-            m[i][j] = 0;
+            m[i][j] = false;
         }
     }
     this->matrix = m;
