@@ -17,11 +17,23 @@ using namespace std;
 #define _Grafo
 
 class Grafo {
-    
+
     public:
         vector<Arista> aristas;
         int nVertices;
         bool** matrix;
+
+        struct OrderNodo
+        {
+            bool operator()(Vertice v1,Vertice v2) const {
+                    if (v1.grado == v2.grado ) {
+                        return v1.id <= v2.id; 
+                    } else {
+                        return v1.grado > v2.grado;
+                    }
+                }
+        };
+        set<Vertice, OrderNodo> grados;
 
         /*
          * Constructor de la clase Grafo

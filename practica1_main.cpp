@@ -10,22 +10,12 @@
 #include "lib/algoritmos/Algoritmos.h"
 
 using namespace std;
-struct OrderNodo
-{
-    bool operator()(Vertice v1,Vertice v2) const{
-            if(v1.grado == v2.grado ){
-                return v1.id <= v2.id; 
-            }else{
-                return v1.grado > v2.grado;
-            }
-        }
-};
 
 int info_fichero(string fichero) {
     fstream my_file;
     my_file.open(fichero, ios::in);
 
-    if(my_file.is_open()) { 
+    if (my_file.is_open()) { 
         char *linea = (char*)malloc(sizeof(char[1000]));
         my_file.getline(linea, 1000, '\n');
         my_file.close();
@@ -39,26 +29,27 @@ int info_fichero(string fichero) {
 void get_weight(string fichero, int dim, Grafo* grafo) {
     fstream my_file;
     my_file.open(fichero, ios::in);
-    const int dim2 = dim * 2 + 1;
+
     // Declaración de variables utilizadas
-    char *linea = (char*)malloc(sizeof(char[dim2]));
-    char *tmp = (char*)malloc(sizeof(char[dim2]));
-    set<Vertice,OrderNodo> grados;
+    const int dim2 = dim * 2 + 1;
+    char *linea = (char*) malloc(sizeof(char[dim2]));
+    char *tmp = (char*) malloc(sizeof(char[dim2]));
+    set<Vertice, Grafo::OrderNodo> grados;
     int i = 0, j = 0;
     float tmp_f;
-    int count = dim;
+    int count = 0;
+
     if(my_file.is_open()) { 
-        //my_file.seekg(start * dim, std::ios::cur);
+        my_file.getline(linea, dim2, '\n');
         
         while(!my_file.eof() ) { 
             //cout << endl; 
             int grado = 0;
             my_file.getline(linea, dim2, '\n');
             //cout << linea <<endl;
+            //printf ("%f", (float)count/(float)dim * 100) ;
+            cout << (float)count/(float)dim * 100 << " %" << endl;
             count++;
-            //cout << count/end << " %" << endl;
-            printf ("%f", (float)count/(float)dim);
-            cout <<" %" << endl;
             tmp = strtok(linea," ");
 
             while (tmp != NULL) {
@@ -70,53 +61,59 @@ void get_weight(string fichero, int dim, Grafo* grafo) {
                     //cout << "Introduce arista: "<<arista.toString()<<endl;
                     //grafo->addArista(arista);
                     grado ++;
-                    grafo->matrix[i-1][j] = true;
+                    grafo->matrix[i][j] = true;
                 }
                 j++;
                 tmp = strtok (NULL, " ");
             }
-            
-            Vertice nuevo =Vertice(i-1);
-            nuevo.grado = grado;
-            cout << "Inserto vertice " << nuevo.id << " de grado " << grado << endl;
-            grados.insert(nuevo);
+
+            if (grado != 0) {
+                Vertice nuevo = Vertice(i);
+                nuevo.grado = grado;
+                //cout << "Inserto vertice " << nuevo.id << " de grado " << grado << endl;
+                grados.insert(nuevo);
+                // for(auto i = grados.begin(); i != grados.end(); i++){
+                //     cout << i->grado << " " << i->id << endl;
+                // }
+            }
             j = 0;
             i++;
         }
+        
     }
     my_file.close();
-    cout <<"..."<< endl;
+
+    grafo->grados = grados;
 }
 
 int main(int argv, char* argc[]) {
     int dim = info_fichero(argc[1]);
     Grafo* prueba = new Grafo(dim);
 
-    
-    // The info to use thread has been taken from https://www.bogotobogo.com/cplusplus/C11/1_C11_creating_thread.php
-    int nThreadsSupported = (int)std::thread::hardware_concurrency();
+    int nThreadsSupported = (int) std::thread::hardware_concurrency();
     vector<thread> threads = vector<thread>();
 
     get_weight(argc[1], dim, prueba);
 
     Algoritmos al = Algoritmos();
-    for(int i = 0; i < prueba->nVertices; i++){
-        for(int j = 0; j < prueba->nVertices; j++){
-            if(prueba->matrix[i][j]){
-                cout << "1 ";
-            }else if (!prueba->matrix[i][j]){
-                cout << "0 ";
-            }else{
-                cout << "f ";
-            }
-        }
-        cout << endl;
-    }
+    // for (int i = 0; i < prueba->nVertices; i++) {
+    //     for (int j = 0; j < prueba->nVertices; j++) {
+    //         if (prueba->matrix[i][j]) {
+    //             cout << "1 ";
+    //         } else if (!prueba->matrix[i][j]) {
+    //             cout << "0 ";
+    //         } else {
+    //             cout << "f ";
+    //         }
+    //     }
+    //     cout << endl;
+    // }
+
     //Aproximacion spanning tree recorrido en profundidad
     cout << "Aplicando Spanning-tree profundida: " <<endl;
     auto vertices = al.spanningTreeProfundidad(*prueba);
-    cout << "Vertices seleccionados" << endl;
-    for(int n = 0; n < vertices.size(); n++){
+    cout << "Vertices seleccionados: " << vertices.size() << endl;
+    for (int n = 0; n < vertices.size(); n++) {
         cout << vertices.at(n).id <<" ";
     }
     cout << endl;
@@ -124,8 +121,8 @@ int main(int argv, char* argc[]) {
     //Aproximacion spanning tree recorrido en anchura
     cout << "\nAplicando Spanning-tree anchura: " <<endl;
     vertices = al.spanningTreeAnchura(*prueba);
-    cout << "Vertices seleccionados" << endl;
-    for(int n = 0; n < vertices.size(); n++){
+    cout << "Vertices seleccionados: " <<vertices.size() << endl;
+    for (int n = 0; n < vertices.size(); n++) {
         cout << vertices.at(n).id <<" ";
     }
     cout << endl;  
@@ -133,8 +130,8 @@ int main(int argv, char* argc[]) {
     //Aproximacion spanning tree recorrido en anchura
     cout << "\nAplicando Greddy-algorithm: " <<endl;
     vertices = al.greedyAlgorithm(*prueba);
-    cout << "Vertices seleccionados" << endl;
-    for(int n = 0; n < vertices.size(); n++){
+    cout << "Vertices seleccionados: " << vertices.size() << endl;
+    for (int n = 0; n < vertices.size(); n++) {
         cout << vertices.at(n).id <<" ";
     }
     cout << endl;  

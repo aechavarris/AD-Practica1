@@ -22,7 +22,7 @@ Grafo::Grafo(const int n) {
     }
     this->matrix = m;
 };
-
+//DEPRECATED
 void Grafo::addArista(Arista arista) {
     bool encontrado1 = false;
     bool encontrado2 = false;
@@ -68,72 +68,17 @@ void Grafo::addArista(Arista arista) {
     this->matrix[arista.v1.id][arista.v2.id] = true;
 };
 
-Vertice Grafo::minGrado() {
-    int minGrado = INT_MAX, gradoV1 = 0, gradoV2 = 0;
-    Vertice minimo;
-
-    for (int i = 0; i < this->aristas.size(); i++) {
-        gradoV1 = this->aristas.at(i).v1.grado;
-        gradoV2 = this->aristas.at(i).v2.grado;
-
-        if (gradoV1 < minGrado || gradoV2 < minGrado) minimo = gradoV1 <= gradoV2 ? this->aristas.at(i).v1 : this->aristas.at(i).v2;
-        minGrado = minGrado > minimo.grado ? minimo.grado : minGrado;
-    }  
-    return minimo;
+Vertice Grafo::minGrado() { 
+    return this->grados.end()->id;
 };
 
 Vertice Grafo::maxGrado() {
-    int maxGrado = 0, gradoV1 = 0, gradoV2 = 0;
-    Vertice maximo;
-
-    for (int i = 0; i < this->aristas.size(); i++) {
-        gradoV1 = this->aristas.at(i).v1.grado;
-        gradoV2 = this->aristas.at(i).v2.grado;
-
-        if (gradoV1 > maxGrado || gradoV2 > maxGrado) maximo = gradoV1 >= gradoV2 ? this->aristas.at(i).v1 : this->aristas.at(i).v2;
-        maxGrado = maxGrado < maximo.grado ? maximo.grado : maxGrado;
-    }
-    return maximo;
+    return this->grados.begin()->id;
 };
 
 void Grafo::deleteVertice(Vertice v){
     //cout << "Borro vertice " << v.id<<endl;
-    auto i = this->aristas.begin();
-    int verticesContacto[this->nVertices];
-    for(int i = 0; i < this->nVertices; i++){
-        verticesContacto[i] = 0;
-    }
-    while(i < this->aristas.end()){
-        //cout << "Miro arista " << i->toString()<<endl;
-        if(i->v1.id == v.id ){
-            verticesContacto[i->v2.id]++;
-            //cout << "Erase" << endl;
-            this->aristas.erase(i);
-        }else if(i->v2.id == v.id){
-            verticesContacto[i->v1.id]++;
-            //cout << "Erase" << endl;
-            this->aristas.erase(i);
-        }else{
-            i++;
-        }
-    }
-    i = this->aristas.begin();
-    while(i < this->aristas.end()){
-        //cout << "Miro arista " << i->toString()<<endl;
-        if(verticesContacto[i->v1.id]){
-            //cout << "Disminuyo grado en " << verticesContacto[i->v1.id] << endl;
-            i->v1.grado = i->v1.grado - verticesContacto[i->v1.id];
-        }else if(verticesContacto[i->v2.id]){
-            //cout << "Disminuyo grado en " << verticesContacto[i->v2.id] << endl;
-            i->v2.grado = i->v2.grado - verticesContacto[i->v2.id];
-        }
-        i++;
-    }
-    for(int j = 0; j < this->nVertices; j++){
-        this->matrix[v.id][j] = false;
-        this->matrix[j][v.id] = false;
-    }
-    
+    this->grados.erase(grados.begin());
 }
 
 string Grafo::toString() {

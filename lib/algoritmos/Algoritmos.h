@@ -73,7 +73,7 @@ class Algoritmos {
          * Pre:
          * Post:
          */
-        vector<Vertice> greedyAlgorithm(Grafo &grafo);
+        vector<Vertice> greedyAlgorithm(Grafo grafo);
 };
 
 #include  "Algoritmos.cpp"
