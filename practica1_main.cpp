@@ -3,12 +3,23 @@
 #include <stdio.h>
 #include <string.h>
 #include <thread>
+#include <set>
 #include "lib/grafos/vertice/Vertice.h"
 #include "lib/grafos/arista/Arista.h"
 #include "lib/grafos/grafo/Grafo.h"
 #include "lib/algoritmos/Algoritmos.h"
 
 using namespace std;
+struct OrderNodo
+{
+    bool operator()(Vertice v1,Vertice v2) const{
+            if(v1.grado == v2.grado ){
+                return v1.id <= v2.id; 
+            }else{
+                return v1.grado > v2.grado;
+            }
+        }
+};
 
 int info_fichero(string fichero) {
     fstream my_file;
@@ -28,20 +39,26 @@ int info_fichero(string fichero) {
 void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
     fstream my_file;
     my_file.open(fichero, ios::in);
-    const int dim2 = dim * dim;
+    const int dim2 = dim * 2 + 1;
     // Declaración de variables utilizadas
     char *linea = (char*)malloc(sizeof(char[dim2]));
     char *tmp = (char*)malloc(sizeof(char[dim2]));
+    set<Vertice,OrderNodo> grados;
     int i = start, j = 0;
     float tmp_f;
     int count = start;
     if(my_file.is_open()) { 
         my_file.seekg(start * dim, std::ios::cur);
-        while(!my_file.eof() && count < end) { 
-            //cout << endl;
-
+        
+        while(!my_file.eof() && count <= end) { 
+            //cout << endl; 
+            int grado = 0;
             my_file.getline(linea, dim2, '\n');
+            //cout << linea <<endl;
             count++;
+            //cout << count/end << " %" << endl;
+            printf ("%f", (float)count/(float)end);
+            cout <<" %" << endl;
             tmp = strtok(linea," ");
 
             while (tmp != NULL) {
@@ -49,13 +66,21 @@ void get_weight(int start,int end,string fichero, int dim, Grafo* grafo) {
                 //cout << tmp_f << " ";
                 
                 if(tmp_f == 1) {
-                    Arista arista = Arista(Vertice(i-1), Vertice(j));
                     //cout << "Introduce arista: "<<arista.toString()<<endl;
-                    grafo->addArista(arista);
+                    //grafo->addArista(arista);
+                    grado ++;
+                    grafo->matrix[i-1][j] = true;
+                }else{
+                    grafo->matrix[i-1][j] = false;
                 }
                 j++;
                 tmp = strtok (NULL, " ");
             }
+            
+            Vertice nuevo =Vertice(i-1);
+            nuevo.grado = grado;
+            cout << "Inserto vertice " << nuevo.id << " de grado " << grado << endl;
+            grados.insert(nuevo);
             j = 0;
             i++;
         }
@@ -74,28 +99,55 @@ int main(int argv, char* argc[]) {
     vector<thread> threads = vector<thread>();
 
     long int start = 0;
-    long int end = dim * dim;
-    
-    cout << "Reading input matrix..." << endl;
-    for (int i = 0; i < nThreadsSupported; i++)
-    {   
-        threads.push_back(thread(get_weight, start, end, argc[1], dim, ref(prueba)));
-        start = end;
-        end = (i == nThreadsSupported - 2) ? dim : end + dim / nThreadsSupported;
-    }
+    if(dim <= nThreadsSupported){
 
-    for (int i = 0; i < nThreadsSupported; i++)
-    {
-        threads.at(i).join();
+        cout << "Reading input matrix..." << endl;
+        long int end = start +1 ;
+        for (int i = 0; i < nThreadsSupported && start != end; i++)
+        {   
+            cout << "Start " << start << " end " << end <<endl;
+            threads.push_back(thread(get_weight, start, end, argc[1], dim, ref(prueba)));
+            start = end;
+            end = start +1 ;
+        }
+        cout << "Start " << start << " end " << end <<endl;
+        for (int i = 0; i < threads.size(); i++)
+        {
+            threads.at(i).join();
+        }
+    }else{
+        get_weight(0, dim, argc[1], dim, prueba);
+        // long int end = dim / nThreadsSupported;
+        
+        // cout << "Reading input matrix..." << endl;
+        // cout << nThreadsSupported <<" cores" << endl;
+        
+        // for (int i = 0; i < nThreadsSupported; i++)
+        // {   
+        //     cout << "Start " << start << " end " << end <<endl;
+        //     threads.push_back(thread(get_weight, start, end, argc[1], dim, ref(prueba)));
+        //     start = end;
+        //     end = (i == nThreadsSupported - 2) ? dim : end + dim / nThreadsSupported;
+        // }
+        // cout << "Start " << start << " end " << end <<endl;
+        // for (int i = 0; i < threads.size(); i++)
+        // {
+        //     threads.at(i).join();
+        // }
     }
-    for(int i = 0; i < dim; i++ ){
-        for(int j = 0; j < dim; j++ ){
-            cout << prueba->matrix[i][j] <<" ";
+    Algoritmos al = Algoritmos();
+    for(int i = 0; i < prueba->nVertices; i++){
+        for(int j = 0; j < prueba->nVertices; j++){
+            if(prueba->matrix[i][j]){
+                cout << "1 ";
+            }else if (!prueba->matrix[i][j]){
+                cout << "0 ";
+            }else{
+                cout << "f ";
+            }
         }
         cout << endl;
     }
-    Algoritmos al = Algoritmos();
-
     //Aproximacion spanning tree recorrido en profundidad
     cout << "Aplicando Spanning-tree profundida: " <<endl;
     auto vertices = al.spanningTreeProfundidad(*prueba);

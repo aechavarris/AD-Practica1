@@ -21,7 +21,7 @@ class Grafo {
     public:
         vector<Arista> aristas;
         int nVertices;
-        int** matrix;
+        bool** matrix;
 
         /*
          * Constructor de la clase Grafo

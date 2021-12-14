@@ -55,13 +55,13 @@ class Algoritmos {
          * Pre:
          * Post:
          */
-        void recorridoAnchura(Grafo &grafo, int origen, bool* verticesCogidos,bool* verticesRecorridos,vector<Vertice> *vertices, int** arbol);
+        void recorridoAnchura(Grafo &grafo, int origen, bool* verticesCogidos,bool* verticesRecorridos,vector<Vertice> *vertices, bool** arbol);
 
         /*
          * Pre:
          * Post:
          */
-        void quitarHojas(Grafo &grafo,int origen,vector<Vertice> *vertices, int** arbol);
+        void quitarHojas(Grafo &grafo,int origen,vector<Vertice> *vertices, bool** arbol);
 
         /*
          * Pre:

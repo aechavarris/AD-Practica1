@@ -12,10 +12,10 @@
 
 Grafo::Grafo(const int n) {
     this->nVertices = n;
-    int** m;
-    m = new int*[n];
+    bool** m;
+    m = new bool*[n];
     for (int i = 0; i < n; i++) {
-        m[i] = new int[n];
+        m[i] = new bool[n];
         for(int j = 0; j < n; j++){
             m[i][j] = 0;
         }
@@ -65,7 +65,7 @@ void Grafo::addArista(Arista arista) {
 
     if (!existente) this->aristas.push_back(arista);
 
-    this->matrix[arista.v1.id][arista.v2.id] = 1;
+    this->matrix[arista.v1.id][arista.v2.id] = true;
 };
 
 Vertice Grafo::minGrado() {
@@ -129,13 +129,11 @@ void Grafo::deleteVertice(Vertice v){
         }
         i++;
     }
-    for (int i = 0; i < this->nVertices; i++) {
-        for(int j = 0; j < this->nVertices; j++){
-            if(i == v.id || j == v.id){
-                this->matrix[i][j] = 0;
-            }
-        }
+    for(int j = 0; j < this->nVertices; j++){
+        this->matrix[v.id][j] = false;
+        this->matrix[j][v.id] = false;
     }
+    
 }
 
 string Grafo::toString() {
