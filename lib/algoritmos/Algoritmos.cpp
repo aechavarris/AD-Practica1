@@ -129,7 +129,6 @@ void Algoritmos::recorridoAnchura(Grafo &grafo, int origen, bool* verticesCogido
         for (int j = 0; j < grafo.nVertices; j++) {
             if (grafo.matrix[i][j] && verticesRecorridos[j] && !verticesCogidos[j] && i != j){
                 //cout <<"Recorro nodo pendiente " << j << endl; 
-                verticesCogidos[i] = true;
                 recorridoAnchura(grafo, j, verticesCogidos, verticesRecorridos, vertices, arbol);
             } 
         }
