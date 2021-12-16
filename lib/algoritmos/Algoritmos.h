@@ -8,7 +8,7 @@
 #pragma once
 
 #include "../../lib/grafos/grafo/Grafo.h"
-
+#include "../../lib/progressBar/ProgressBar.hpp"
 using namespace std;
 
 #ifndef _Algoritmos

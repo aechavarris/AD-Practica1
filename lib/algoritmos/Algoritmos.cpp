@@ -30,6 +30,8 @@ vector<Vertice> Algoritmos::spanningTreeProfundidad(Grafo grafo){
     vector<Vertice>* verticesFinal = new vector<Vertice>();
     bool* verticesCogidos = new bool[grafo.nVertices];
     bool end = false;
+    const int limit = grafo.nVertices ;
+    progresscpp::ProgressBar progressBar(limit, 70);
     for (int i = 0; i < grafo.nVertices; i++) {
         verticesCogidos[i] = false;
     }
@@ -47,7 +49,6 @@ vector<Vertice> Algoritmos::spanningTreeProfundidad(Grafo grafo){
     }
     cout << endl;
     checkVertices(grafo,minVertices,verticesCogidos,vertices,verticesFinal);
-
     return *verticesFinal;
 }
 
@@ -70,6 +71,7 @@ bool Algoritmos::recorridoProfundidad(Grafo &grafo, int origen, bool* verticesCo
                 //cout << "Selecciono arista (" << origen << "," << i << ")" << endl; 
                 verticesCogidos[i]=true;
             }
+            
         }
     }
     return false;
@@ -78,7 +80,6 @@ bool Algoritmos::recorridoProfundidad(Grafo &grafo, int origen, bool* verticesCo
 vector<Vertice> Algoritmos::spanningTreeAnchura(Grafo grafo){
     vector<Vertice>* vertices = new vector<Vertice>();
     vector<Vertice>* verticesFinal = new vector<Vertice>();
-
     bool* verticesCogidos = new bool[grafo.nVertices];
     for (int i = 0; i < grafo.nVertices; i++) verticesCogidos[i] = false;
 
@@ -101,20 +102,17 @@ vector<Vertice> Algoritmos::spanningTreeAnchura(Grafo grafo){
     quitarHojas(grafo, maxGrado.id, vertices, arbol);
     for (int i = 0; i < grafo.nVertices; i++) verticesCogidos[i] = false;
     for (int i = 0; i < grafo.nVertices; i++) verticesRecorridos[i] = false;
-    for (int i = 0; i < vertices->size();i++){
-        cout << vertices->at(i).id << " ";
-    }
-    cout << endl;
     checkVertices(grafo, minVertices, verticesCogidos, vertices, verticesFinal);
-
     return *verticesFinal;
 }
 
 void Algoritmos::recorridoAnchura(Grafo &grafo, int origen, bool* verticesCogidos, bool* verticesRecorridos, vector<Vertice> *vertices, bool** arbol) {
-    bool hijos[grafo.nVertices];
+    //cout << "Soy nodo " << origen << endl;
+    
+    bool* hijos=new bool[grafo.nVertices];
     verticesCogidos[origen] = true;
     verticesRecorridos[origen] = false;
-    //cout << "Soy nodo " << origen << endl;
+    
     for (int i = 0; i < grafo.nVertices; i++) hijos[i] = false;
 
     for (int i = 0; i < grafo.nVertices; i++) {
@@ -139,16 +137,16 @@ void Algoritmos::recorridoAnchura(Grafo &grafo, int origen, bool* verticesCogido
     for (int i = 0; i < grafo.nVertices; i++) {
         if (hijos[i]) {
             //cout << "Recorro hijo " << i << endl;
-            verticesCogidos[i] = true;
             recorridoAnchura(grafo, i, verticesCogidos, verticesRecorridos, vertices, arbol);
             break;
         }
     }
+    delete hijos;
 }
 
 void Algoritmos::quitarHojas(Grafo &grafo,int origen,vector<Vertice> *vertices,bool** arbol){
     bool coger = true;
-    bool hojas[grafo.nVertices];
+    bool* hojas = new bool[grafo.nVertices];
     for(int i = 0; i < grafo.nVertices; i++){
         hojas[i] = false;
     }
@@ -165,6 +163,7 @@ void Algoritmos::quitarHojas(Grafo &grafo,int origen,vector<Vertice> *vertices,b
             vertices->push_back(i);
         }
     }
+    delete hojas;
 }
 
 vector<Vertice> Algoritmos::greedyAlgorithm(Grafo grafo){
@@ -184,6 +183,8 @@ vector<Vertice> Algoritmos::greedyAlgorithm(Grafo grafo){
             if((grafo.matrix[maxVertice.id][i] || grafo.matrix[i][maxVertice.id]) && !verticesCogidos[i]){
                 verticesCogidos[i] = true;
                 total++;
+                const int limit = grafo.nVertices ;
+                progresscpp::ProgressBar progressBar(limit, 70);
                 //cout << "Nuevo vertice: " <<i<< " total de vertices " << total<<endl;
             }
         }

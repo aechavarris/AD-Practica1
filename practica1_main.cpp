@@ -8,7 +8,7 @@
 #include "lib/grafos/arista/Arista.h"
 #include "lib/grafos/grafo/Grafo.h"
 #include "lib/algoritmos/Algoritmos.h"
-
+#include "lib/progressBar/ProgressBar.hpp"
 using namespace std;
 
 int info_fichero(string fichero) {
@@ -29,7 +29,7 @@ int info_fichero(string fichero) {
 void get_weight(string fichero, int dim, Grafo* grafo) {
     fstream my_file;
     my_file.open(fichero, ios::in);
-
+    cout << "Leyendo matriz de entrada: \n";
     // Declaración de variables utilizadas
     const int dim2 = dim * 2 + 1;
     char *linea = (char*) malloc(sizeof(char[dim2]));
@@ -38,7 +38,8 @@ void get_weight(string fichero, int dim, Grafo* grafo) {
     int i = 0, j = 0;
     float tmp_f;
     int count = 0;
-
+    const int limit = dim ;
+    progresscpp::ProgressBar progressBar(limit, 70);
     if(my_file.is_open()) { 
         my_file.getline(linea, dim2, '\n');
         
@@ -48,8 +49,7 @@ void get_weight(string fichero, int dim, Grafo* grafo) {
             my_file.getline(linea, dim2, '\n');
             //cout << linea <<endl;
             //printf ("%f", (float)count/(float)dim * 100) ;
-            cout << (float)count/(float)dim * 100 << " %" << endl;
-            count++;
+            
             tmp = strtok(linea," ");
 
             while (tmp != NULL) {
@@ -78,11 +78,13 @@ void get_weight(string fichero, int dim, Grafo* grafo) {
             }
             j = 0;
             i++;
+            ++progressBar;
+            progressBar.display();
         }
         
     }
     my_file.close();
-
+    progressBar.done();
     grafo->grados = grados;
 }
 

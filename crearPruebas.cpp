@@ -4,7 +4,8 @@
 #include <string.h>
 #include <chrono>
 #include <random>
-
+#include <mutex>
+#include "lib/progressBar/ProgressBar.hpp"
 using namespace std;
 
 int intRand(const int & min, const int & max) { 
@@ -39,8 +40,8 @@ int main(int argv, char* argc[]) {
     while (minDim <= maxDim) {
         cout << "Creando grafo dimension "<< minDim <<endl;
         string para = to_string(minDim);
-        string buffer = para + "\n";
-        
+        const int limit = minDim * 2 ;
+        progresscpp::ProgressBar progressBar(limit, 70);
         int** m;
         m = new int*[minDim];
         for (int i = 0; i < minDim; i++) {
@@ -48,7 +49,10 @@ int main(int argv, char* argc[]) {
         }
 
         ofstream MyFile("prueba_" + to_string(minDim) + ".txt");
+        
+        MyFile << para + "\n";
         int i = 0;
+        int count = 0;
         while (i < minDim) {
             bool next = false;
             for (int j = 0; j < minDim; j++) {
@@ -68,25 +72,28 @@ int main(int argv, char* argc[]) {
                     m[j][i] = 0;
                 }
             }
+            ++progressBar;
+            progressBar.display();
             if (next) i++;
         }
 
         for (int i = 0; i < minDim; i++) {
             for (int j = 0; j < minDim; j++) {
-                if (m[i][j] == 1 || m[j][i]) buffer = buffer + "1";
-                else buffer = buffer + "0";
+                if (m[i][j] || m[j][i]) MyFile << "1" ;
+                else MyFile << "0" ;
 
-                if (j + 1 < minDim) buffer= buffer + " ";
+                if (j + 1 < minDim) MyFile << " ";
             }
-            buffer = buffer +"\n";
+            ++progressBar;
+            progressBar.display();
+            MyFile << "\n" ;
         }
 
         // Write to the file
-        MyFile << buffer;
 
         // Close the file
         MyFile.close();
-
+        progressBar.done();
         for (int i = 0; i < minDim; i++) delete m[i];
 
         delete m;
